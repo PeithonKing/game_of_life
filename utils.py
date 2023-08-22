@@ -34,9 +34,9 @@ def conv2d(matrix, func, stride=1, padding=1):
     for i in range(0, output_height):
         for j in range(0, output_width):
             row_start = i * stride
-            row_end = row_start + kernel_height
+            row_end   = row_start + kernel_height
             col_start = j * stride
-            col_end = col_start + kernel_width
+            col_end   = col_start + kernel_width
             
             patch = padded_matrix[row_start:row_end, col_start:col_end]
             output[i, j] = func(patch)
