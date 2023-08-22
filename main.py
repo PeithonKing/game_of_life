@@ -24,7 +24,10 @@ def main():
     SIZE = 10
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     
-    cells = np.zeros((HEIGHT//SIZE, WIDTH//SIZE))
+    # Uncomment the following lines to generate a random initial state
+    # cells = np.zeros((HEIGHT//SIZE, WIDTH//SIZE))
+    # cells = np.random.randint(0, 2, cells.shape)
+    cells = np.load(f'save_{WIDTH}_{HEIGHT}_{SIZE}.npy')
     screen.fill(COLOR_DIE)
     update(screen, cells, SIZE)
 
