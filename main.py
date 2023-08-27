@@ -22,22 +22,34 @@ def main():
     WIDTH = 800
     HEIGHT = 600
     SIZE = 10
-    screen = pygame.display.set_mode((WIDTH, HEIGHT))
-    
+    show_fps = True
+    init_stage = "spaceship2" # "blank", "random", name of a file
+    save_path = "saved_states"
     # Uncomment the following lines to generate a random initial state
     # cells = np.zeros((HEIGHT//SIZE, WIDTH//SIZE))
     # cells = np.random.randint(0, 2, cells.shape)
-    cells = np.load(f'save_{WIDTH}_{HEIGHT}_{SIZE}.npy')
+    # cells = np.load(f'save_{WIDTH}_{HEIGHT}_{SIZE}.npy')
+    if init_stage == "blank":
+        cells = np.zeros((HEIGHT//SIZE, WIDTH//SIZE))
+    elif init_stage == "random":
+        cells = np.random.randint(0, 2, (HEIGHT//SIZE, WIDTH//SIZE))
+    else:
+        filename = f'{save_path}/{init_stage}_{WIDTH}_{HEIGHT}_{SIZE}.npy'
+        try: cells = np.load(filename)
+        except: raise ValueError(f'File {filename} does not exist')
+    screen = pygame.display.set_mode((WIDTH, HEIGHT))
     screen.fill(COLOR_DIE)
     update(screen, cells, SIZE)
-
     pygame.display.flip()
     pygame.display.update()
 
     running = False
+    if init_stage != "blank" and init_stage != "random":
+        running = True
 
-    t0 = time.time()
-    i = 0
+    if show_fps:
+        t0 = time.time()
+        i = 0
 
     while True:
         for event in pygame.event.get():
@@ -45,14 +57,14 @@ def main():
                 pygame.quit()
                     
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
+                if event.key == pygame.K_SPACE: # when `space` is pressed
                     running = not running
                     update(screen, cells, SIZE)
                     pygame.display.update()
                 # if `s` is pressed, save the current state of the
-                # game to a file named `save_width_height_size.npy`
+                # game to a file named `save_<width>_<height>_<size>.npy`
                 if event.key == pygame.K_s:
-                    np.save(f'save_{WIDTH}_{HEIGHT}_{SIZE}.npy', cells)
+                    np.save(f'{save_path}/save_{WIDTH}_{HEIGHT}_{SIZE}.npy', cells)
             
             elif pygame.mouse.get_pressed()[0]:
                 x, y = pygame.mouse.get_pos()
@@ -67,15 +79,16 @@ def main():
             cells = step(cells)
             update(screen, cells, SIZE)
             pygame.display.update()
-        # else:
-        #     time.sleep(0.03)
+        elif show_fps:
+            time.sleep(0.03)
         
-        # i += 1
-        # th = 100
-        # if i == th:
-        #     print(f"FPS: {th / (time.time() - t0)}")
-        #     t0 = time.time()
-        #     i = 0
+        if show_fps:
+            i += 1
+            th = 100
+            if i == th:
+                print(f"FPS: {th / (time.time() - t0)}")
+                t0 = time.time()
+                i = 0
 
 if __name__ == '__main__':
     main()
