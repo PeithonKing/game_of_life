@@ -1,7 +1,7 @@
 import numpy as np
 import pygame
 import time
-from utils import step
+from utils import conv2d
 
 COLOR_DIE = (0, 0, 0)
 COLOR_ALIVE = (255, 255, 255)
@@ -23,7 +23,8 @@ def main():
     HEIGHT = 600
     SIZE = 10
     show_fps = True
-    init_stage = "spaceship2" # "blank", "random", name of a file
+    init_stage = "random" # "blank", "random", name of a file
+    init_stage = "spaceship1" # "blank", "random", name of a file
     save_path = "saved_states"
     # Uncomment the following lines to generate a random initial state
     # cells = np.zeros((HEIGHT//SIZE, WIDTH//SIZE))
@@ -76,19 +77,18 @@ def main():
         screen.fill(COLOR_DIE)    
         
         if running:
-            cells = step(cells)
+            cells = conv2d(cells)
             update(screen, cells, SIZE)
             pygame.display.update()
-        elif show_fps:
-            time.sleep(0.03)
-        
+        # elif show_fps:
+        #     time.sleep(0.03)
+
         if show_fps:
             i += 1
-            th = 100
-            if i == th:
-                print(f"FPS: {th / (time.time() - t0)}")
-                t0 = time.time()
+            if time.time() - t0 >= 1:
+                print(f'FPS: {i}')
                 i = 0
+                t0 = time.time()
 
 if __name__ == '__main__':
     main()
